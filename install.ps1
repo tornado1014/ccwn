@@ -46,58 +46,63 @@ if ($localSource -and (Test-Path $localSource)) {
     }
 }
 
-# Update settings.json
+# Hook configuration
 $hookCommand = "node `"%USERPROFILE%\.claude\hooks\windows-notification.mjs`""
-$newHooks = @{
-    Notification = @(
-        @{
-            hooks = @(
-                @{
-                    type = "command"
-                    command = $hookCommand
-                    timeout = 10
-                }
-            )
-        }
-    )
-    Stop = @(
-        @{
-            hooks = @(
-                @{
-                    type = "command"
-                    command = $hookCommand
-                    timeout = 10
-                }
-            )
-        }
-    )
-}
 
+# Read existing settings or create new
 if (Test-Path $settingsPath) {
-    $settings = Get-Content $settingsPath -Raw | ConvertFrom-Json -AsHashtable
+    $settingsJson = Get-Content $settingsPath -Raw
+    $settings = $settingsJson | ConvertFrom-Json
 } else {
-    $settings = @{}
+    $settings = [PSCustomObject]@{}
 }
 
-# Merge hooks
-if (-not $settings.ContainsKey("hooks")) {
-    $settings["hooks"] = @{}
+# Ensure hooks property exists
+if (-not ($settings.PSObject.Properties.Name -contains "hooks")) {
+    $settings | Add-Member -NotePropertyName "hooks" -NotePropertyValue ([PSCustomObject]@{})
 }
 
-foreach ($event in $newHooks.Keys) {
-    if ($settings["hooks"].ContainsKey($event)) {
-        # Check if already installed
-        $existing = $settings["hooks"][$event] | ConvertTo-Json -Compress
-        if ($existing -match "windows-notification\.mjs") {
-            Write-Host "Hook already exists for: $event" -ForegroundColor Yellow
-            continue
+# Helper function to create hook entry
+function New-HookEntry {
+    return @(
+        [PSCustomObject]@{
+            hooks = @(
+                [PSCustomObject]@{
+                    type = "command"
+                    command = $hookCommand
+                    timeout = 10
+                }
+            )
         }
-        # Append to existing hooks
-        $settings["hooks"][$event] += $newHooks[$event]
+    )
+}
+
+# Add Notification hook
+if (-not ($settings.hooks.PSObject.Properties.Name -contains "Notification")) {
+    $settings.hooks | Add-Member -NotePropertyName "Notification" -NotePropertyValue (New-HookEntry)
+    Write-Host "Added hook: Notification" -ForegroundColor Green
+} else {
+    $existingJson = $settings.hooks.Notification | ConvertTo-Json -Compress
+    if ($existingJson -match "windows-notification\.mjs") {
+        Write-Host "Hook already exists for: Notification" -ForegroundColor Yellow
     } else {
-        $settings["hooks"][$event] = $newHooks[$event]
+        $settings.hooks.Notification += (New-HookEntry)
+        Write-Host "Added hook: Notification" -ForegroundColor Green
     }
-    Write-Host "Added hook: $event" -ForegroundColor Green
+}
+
+# Add Stop hook
+if (-not ($settings.hooks.PSObject.Properties.Name -contains "Stop")) {
+    $settings.hooks | Add-Member -NotePropertyName "Stop" -NotePropertyValue (New-HookEntry)
+    Write-Host "Added hook: Stop" -ForegroundColor Green
+} else {
+    $existingJson = $settings.hooks.Stop | ConvertTo-Json -Compress
+    if ($existingJson -match "windows-notification\.mjs") {
+        Write-Host "Hook already exists for: Stop" -ForegroundColor Yellow
+    } else {
+        $settings.hooks.Stop += (New-HookEntry)
+        Write-Host "Added hook: Stop" -ForegroundColor Green
+    }
 }
 
 # Save settings
