@@ -1,5 +1,5 @@
 # Claude Code Windows Notifications - Installer
-# Run: irm https://raw.githubusercontent.com/YOUR_USERNAME/claude-code-windows-notify/main/install.ps1 | iex
+# Run: irm https://raw.githubusercontent.com/tornado1014/claude-code-windows-notify/master/install.ps1 | iex
 
 $ErrorActionPreference = "Stop"
 
@@ -27,10 +27,10 @@ if (-not (Test-Path $hooksDir)) {
 }
 
 # Determine source path (local or remote)
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$localSource = Join-Path $scriptDir "hooks\windows-notification.mjs"
+$scriptDir = if ($MyInvocation.MyCommand.Path) { Split-Path -Parent $MyInvocation.MyCommand.Path } else { $null }
+$localSource = if ($scriptDir) { Join-Path $scriptDir "hooks\windows-notification.mjs" } else { $null }
 
-if (Test-Path $localSource) {
+if ($localSource -and (Test-Path $localSource)) {
     # Local install
     Copy-Item $localSource $scriptPath -Force
     Write-Host "Installed: $scriptPath" -ForegroundColor Green
@@ -41,7 +41,7 @@ if (Test-Path $localSource) {
         Invoke-WebRequest -Uri $repoUrl -OutFile $scriptPath -UseBasicParsing
         Write-Host "Downloaded: $scriptPath" -ForegroundColor Green
     } catch {
-        Write-Host "Error downloading script. Please install manually." -ForegroundColor Red
+        Write-Host "Error downloading script: $_" -ForegroundColor Red
         exit 1
     }
 }
