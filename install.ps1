@@ -36,7 +36,7 @@ if (Test-Path $localSource) {
     Write-Host "Installed: $scriptPath" -ForegroundColor Green
 } else {
     # Remote install - download from GitHub
-    $repoUrl = "https://raw.githubusercontent.com/tornado1014/claude-code-windows-notify/main/hooks/windows-notification.mjs"
+    $repoUrl = "https://raw.githubusercontent.com/tornado1014/claude-code-windows-notify/master/hooks/windows-notification.mjs"
     try {
         Invoke-WebRequest -Uri $repoUrl -OutFile $scriptPath -UseBasicParsing
         Write-Host "Downloaded: $scriptPath" -ForegroundColor Green

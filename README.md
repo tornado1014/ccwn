@@ -19,7 +19,7 @@ Windows toast notifications for Claude Code events. Get notified when Claude nee
 ### Quick Install (PowerShell)
 
 ```powershell
-irm https://raw.githubusercontent.com/tornado1014/claude-code-windows-notify/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/tornado1014/claude-code-windows-notify/master/install.ps1 | iex
 ```
 
 ### Manual Install
