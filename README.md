@@ -19,14 +19,14 @@ Windows toast notifications for Claude Code events. Get notified when Claude nee
 ### Quick Install (PowerShell)
 
 ```powershell
-irm https://raw.githubusercontent.com/YOUR_USERNAME/claude-code-windows-notify/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/tornado1014/claude-code-windows-notify/main/install.ps1 | iex
 ```
 
 ### Manual Install
 
 1. Clone the repository:
    ```powershell
-   git clone https://github.com/YOUR_USERNAME/claude-code-windows-notify.git
+   git clone https://github.com/tornado1014/claude-code-windows-notify.git
    cd claude-code-windows-notify
    ```
 
