@@ -1,5 +1,5 @@
 # Claude Code Windows Notifications - Installer
-# Run: irm https://raw.githubusercontent.com/tornado1014/claude-code-windows-notify/master/install.ps1 | iex
+# Run: irm https://raw.githubusercontent.com/tornado1014/ccwn/master/install.ps1 | iex
 
 $ErrorActionPreference = "Stop"
 
@@ -36,7 +36,7 @@ if ($localSource -and (Test-Path $localSource)) {
     Write-Host "Installed: $scriptPath" -ForegroundColor Green
 } else {
     # Remote install - download from GitHub
-    $repoUrl = "https://raw.githubusercontent.com/tornado1014/claude-code-windows-notify/master/hooks/windows-notification.mjs"
+    $repoUrl = "https://raw.githubusercontent.com/tornado1014/ccwn/master/hooks/windows-notification.mjs"
     try {
         Invoke-WebRequest -Uri $repoUrl -OutFile $scriptPath -UseBasicParsing
         Write-Host "Downloaded: $scriptPath" -ForegroundColor Green
