@@ -2,6 +2,8 @@
 
 Windows toast notifications for Claude Code events. Get notified when Claude needs your attention or completes a task.
 
+**No external dependencies** - Uses native Windows.UI.Notifications API.
+
 ## Features
 
 - **Idle Prompt**: Notifies when Claude is waiting for input
@@ -12,7 +14,7 @@ Windows toast notifications for Claude Code events. Get notified when Claude nee
 
 - Windows 10/11
 - [Claude Code](https://claude.ai/claude-code) CLI
-- Node.js 18+ (for .mjs version)
+- PowerShell 5.1+ (included in Windows)
 
 ## Installation
 
@@ -27,7 +29,7 @@ irm https://raw.githubusercontent.com/tornado1014/ccwn/master/install.ps1 | iex
 1. Clone the repository:
    ```powershell
    git clone https://github.com/tornado1014/ccwn.git
-   cd claude-code-windows-notify
+   cd ccwn
    ```
 
 2. Run the install script:
@@ -39,7 +41,7 @@ irm https://raw.githubusercontent.com/tornado1014/ccwn/master/install.ps1 | iex
 
 The installer automatically adds hooks to your Claude Code settings. You can customize notifications by editing:
 
-- `~/.claude/hooks/windows-notification.mjs` - Notification messages
+- `~/.claude/hooks/notification.ps1` - Notification messages
 - `~/.claude/settings.json` - Hook configuration
 
 ### Notification Events
@@ -58,7 +60,7 @@ The installer automatically adds hooks to your Claude Code settings. You can cus
 
 Or manually:
 1. Remove hooks from `~/.claude/settings.json`
-2. Delete `~/.claude/hooks/windows-notification.mjs`
+2. Delete `~/.claude/hooks/notification.ps1`
 
 ## How It Works
 

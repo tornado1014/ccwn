@@ -6,19 +6,11 @@ $ErrorActionPreference = "Stop"
 Write-Host "Claude Code Windows Notifications - Installer" -ForegroundColor Cyan
 Write-Host "=============================================" -ForegroundColor Cyan
 
-# Check Node.js
-$nodeVersion = node --version 2>$null
-if (-not $nodeVersion) {
-    Write-Host "Error: Node.js is required. Install from https://nodejs.org" -ForegroundColor Red
-    exit 1
-}
-Write-Host "Node.js: $nodeVersion" -ForegroundColor Green
-
 # Paths
 $claudeDir = Join-Path $env:USERPROFILE ".claude"
 $hooksDir = Join-Path $claudeDir "hooks"
 $settingsPath = Join-Path $claudeDir "settings.json"
-$scriptPath = Join-Path $hooksDir "windows-notification.mjs"
+$scriptPath = Join-Path $hooksDir "notification.ps1"
 
 # Create directories
 if (-not (Test-Path $hooksDir)) {
@@ -28,7 +20,7 @@ if (-not (Test-Path $hooksDir)) {
 
 # Determine source path (local or remote)
 $scriptDir = if ($MyInvocation.MyCommand.Path) { Split-Path -Parent $MyInvocation.MyCommand.Path } else { $null }
-$localSource = if ($scriptDir) { Join-Path $scriptDir "hooks\windows-notification.mjs" } else { $null }
+$localSource = if ($scriptDir) { Join-Path $scriptDir "hooks\notification.ps1" } else { $null }
 
 if ($localSource -and (Test-Path $localSource)) {
     # Local install
@@ -36,7 +28,7 @@ if ($localSource -and (Test-Path $localSource)) {
     Write-Host "Installed: $scriptPath" -ForegroundColor Green
 } else {
     # Remote install - download from GitHub
-    $repoUrl = "https://raw.githubusercontent.com/tornado1014/ccwn/master/hooks/windows-notification.mjs"
+    $repoUrl = "https://raw.githubusercontent.com/tornado1014/ccwn/master/hooks/notification.ps1"
     try {
         Invoke-WebRequest -Uri $repoUrl -OutFile $scriptPath -UseBasicParsing
         Write-Host "Downloaded: $scriptPath" -ForegroundColor Green
@@ -47,7 +39,7 @@ if ($localSource -and (Test-Path $localSource)) {
 }
 
 # Hook configuration
-$hookCommand = "node `"%USERPROFILE%\.claude\hooks\windows-notification.mjs`""
+$hookCommand = "powershell -NoProfile -ExecutionPolicy Bypass -File `"%USERPROFILE%\.claude\hooks\notification.ps1`""
 
 # Read existing settings or create new
 if (Test-Path $settingsPath) {
@@ -83,7 +75,7 @@ if (-not ($settings.hooks.PSObject.Properties.Name -contains "Notification")) {
     Write-Host "Added hook: Notification" -ForegroundColor Green
 } else {
     $existingJson = $settings.hooks.Notification | ConvertTo-Json -Compress
-    if ($existingJson -match "windows-notification\.mjs") {
+    if ($existingJson -match "notification\.ps1") {
         Write-Host "Hook already exists for: Notification" -ForegroundColor Yellow
     } else {
         $settings.hooks.Notification += (New-HookEntry)
@@ -97,7 +89,7 @@ if (-not ($settings.hooks.PSObject.Properties.Name -contains "Stop")) {
     Write-Host "Added hook: Stop" -ForegroundColor Green
 } else {
     $existingJson = $settings.hooks.Stop | ConvertTo-Json -Compress
-    if ($existingJson -match "windows-notification\.mjs") {
+    if ($existingJson -match "notification\.ps1") {
         Write-Host "Hook already exists for: Stop" -ForegroundColor Yellow
     } else {
         $settings.hooks.Stop += (New-HookEntry)
