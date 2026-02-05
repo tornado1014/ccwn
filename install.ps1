@@ -46,7 +46,7 @@ $hookCommand = "powershell -NoProfile -ExecutionPolicy Bypass -File `"%USERPROFI
 
 # Read existing settings or create new
 if (Test-Path $settingsPath) {
-    $settingsJson = Get-Content $settingsPath -Raw
+    $settingsJson = Get-Content $settingsPath -Raw -Encoding UTF8
     $settings = $settingsJson | ConvertFrom-Json
 } else {
     $settings = [PSCustomObject]@{}
