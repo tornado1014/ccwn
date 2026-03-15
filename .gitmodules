@@ -1,0 +1,9 @@
+[submodule "bible"]
+	path = bible
+	url = https://github.com/laisiangtho/bible.git
+[submodule "py_kbible"]
+	path = py_kbible
+	url = https://github.com/sungcheolkim78/py_kbible.git
+[submodule "bible_databases"]
+	path = bible_databases
+	url = https://github.com/scrollmapper/bible_databases.git
